@@ -1,6 +1,7 @@
 import axios from "axios";
 import telegram from "node-telegram-bot-api";
 import { datos } from "./datos";
+import { parametroDTO } from "./parametroDTO";
 
 
 const TELEGRAM_KEY = "2014934960:AAEVqN8OJ7cB0I_JKGWUgOPeOQZGB4zK0Yo";
@@ -122,24 +123,127 @@ function consulta(msg: any, token: string, op: string, ced: string) {
 
                 });
             break;
+        case "4":
+            var horario = "Nuestro horario es:\n\n\n";
+            
+            axios.get(url + 'parametros/nombre/horario_lunes', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+                console.log("status "+response.status);
+            });
+            
+
+            axios.get(url + 'parametros/nombre/horario_martes', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+
+            axios.get(url + 'parametros/nombre/horario_miercoles', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+
+            axios.get(url + 'parametros/nombre/horario_jueves', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+
+            axios.get(url + 'parametros/nombre/horario_viernes', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+
+            axios.get(url + 'parametros/nombre/horario_sabado', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+
+            axios.get(url + 'parametros/nombre/horario_domingo', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                horario += txt.dato +"\n\n";
+            });
+            console.log("Horario ");
+            console.log(horario);
+            console.log("termina ");
+            Bot.sendMessage(msg.chat.id, horario);
+            break;
+        case "5":
+            axios.get(url + 'parametros/nombre/correo_electronico_muni', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                var correo = "Nuestro correo es: ";
+                txt=response.data as parametroDTO;
+                correo+=txt.dato;
+                Bot.sendMessage(msg.chat.id, correo);
+            });
+            break;
+        case "6":
+            var telefono = "";
+            axios.get(url + 'parametros/nombre/telefono_muni', {
+                headers: {
+                    'AUTHORIZATION': 'bearer ' + token
+                }
+            }).then((response) => {
+                var txt:parametroDTO;
+                txt = response.data as parametroDTO;
+                telefono+="Nuestro telefono es: "+txt.dato+"\n\n";
+                Bot.sendMessage(msg.chat.id, telefono);
+            });
+            
+            break;
+
     }
 };
 
 
 Bot.onText(/\/horario/, (msg: any) => {
-    var horario = "Nuestro horario es:\n\n\nLunes: 07:00am - 04:00pm\n\nMartes: 07:00am - 04:00pm\n\nMiercoles: 07:00am - 04:00pm\n\nJueves: 07:00am - 04:00pm\n\nViernes: 07:00am - 04:00pm\n\nSabado-Domingo: CERRADO"
-    Bot.sendMessage(msg.chat.id, horario);
+    conectar(msg, "4", "")
 });
 
 Bot.onText(/\/correo/, (msg: any) => {
-    var correo = "Nuestro correo es: cobrosmuni@munipz.com"
-    Bot.sendMessage(msg.chat.id, correo);
+    conectar(msg, "5", "")
 });
 
 Bot.onText(/\/telefono/, (msg: any) => {
-    var telefono = "Nuestro telefono es: 2771-0202\n\n" +
-        "Nuestra linea gratuita es: 800-8000-686424725 (MUNICIPAL)";
-    Bot.sendMessage(msg.chat.id, telefono);
+    conectar(msg, "6", "")
 });
 
 Bot.onText(/\/total (.+)/, (msg: any, match: any) => {
