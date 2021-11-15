@@ -72,18 +72,14 @@ function consulta(msg: any, token: string, op: string, ced: string) {
                     var total: string;
 
                     cobros = response.data as number;
-                    //cobros.toLocaleString('es-CRC',{style: 'currency',currency: '₡', minimumFractionDigits: 2});
-                    //total = cobros.monto;
                     var re = /CRC/gi
                     var newstr = currency(cobros).replace(re, "₡")
                     console.log(cobros);
                     Bot.sendMessage(msg.chat.id, "La suma total de los cobros del usuario cedula:" + ced + " es de: " + newstr);
 
-
-                    console.log(response.status);
-                    console.log(response.statusText);
-
                 }, (error) => {
+
+                    Bot.sendMessage(msg.chat.id, "Lo sentimos, hubo un error al intentar realizar su consulta.\nPor favor intentelo mas tarde.");
                     console.log(error);
                 });
             break;
@@ -100,8 +96,6 @@ function consulta(msg: any, token: string, op: string, ced: string) {
                     var cobrosEspecificos: string;
                     cobrosEspecificos = response.data as string;
                     Bot.sendMessage(msg.chat.id, "Los cobros pendientes del usuario: " + ced + " son:\n" + cobrosEspecificos);
-                    console.log(response.status);
-                    console.log(response.statusText);
 
                 });
             break;
@@ -118,89 +112,23 @@ function consulta(msg: any, token: string, op: string, ced: string) {
                     var valoresImpositivos: string;
                     valoresImpositivos = response.data as string;
                     Bot.sendMessage(msg.chat.id, "Los valores impositivos asociados al usuario: " + ced + " son:\n" + valoresImpositivos);
-                    console.log(response.status);
-                    console.log(response.statusText);
 
                 });
             break;
         case "4":
             var horario = "Nuestro horario es:\n\n\n";
             
-            axios.get(url + 'parametros/nombre/horario_lunes', {
+            axios.get(url + 'parametros/horario', {
                 headers: {
                     'AUTHORIZATION': 'bearer ' + token
                 }
             }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-                console.log("status "+response.status);
+                var txt = response.data as string;
+                horario += txt +"\n\n";
+                Bot.sendMessage(msg.chat.id, horario);
             });
             
-
-            axios.get(url + 'parametros/nombre/horario_martes', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-
-            axios.get(url + 'parametros/nombre/horario_miercoles', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-
-            axios.get(url + 'parametros/nombre/horario_jueves', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-
-            axios.get(url + 'parametros/nombre/horario_viernes', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-
-            axios.get(url + 'parametros/nombre/horario_sabado', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-
-            axios.get(url + 'parametros/nombre/horario_domingo', {
-                headers: {
-                    'AUTHORIZATION': 'bearer ' + token
-                }
-            }).then((response) => {
-                var txt:parametroDTO;
-                txt = response.data as parametroDTO;
-                horario += txt.dato +"\n\n";
-            });
-            console.log("Horario ");
-            console.log(horario);
-            console.log("termina ");
-            Bot.sendMessage(msg.chat.id, horario);
+            
             break;
         case "5":
             axios.get(url + 'parametros/nombre/correo_electronico_muni', {
